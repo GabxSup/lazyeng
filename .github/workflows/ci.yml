@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build dist/
+        run: ./build.sh
+
+      - name: dist/ matches core/
+        run: ./build.sh --check
+
+      - name: Build must not leave uncommitted changes
+        run: git diff --exit-code
+
+      - name: Test suite
+        run: bash tests/run.sh
+
+  perl-syntax:
+    name: perl syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: perl -c compress.sh
