@@ -1,4 +1,4 @@
-# LazyEng `v2.0.0`
+# LazyEng `v2.1.0`
 
 **Token-efficient coding rules that install into the agent you already use.**
 

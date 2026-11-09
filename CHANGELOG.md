@@ -3,6 +3,24 @@
 All notable changes to this project are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
+## [2.1.0] — 2026-11-08
+
+### Added
+
+- **`compress.sh --tokens`** — prints before/after token estimates (`chars/4`) to stderr alongside the compressed output.
+- **`compress.sh --file FILE`** — compresses `FILE` and overwrites it in place; use `-` to read stdin and write stdout (existing behavior).
+- **Paragraph deduplication** in `compress_document`: consecutive identical paragraphs (after whitespace normalisation) are collapsed to one copy. Catches copy-paste repetition common in long context pastes.
+- **Extended filler vocabulary**: `literally`, `absolutely`, `definitely`, `certainly`, `naturally`, `essentially`, `effectively`, `quite`, `rather`, `somewhat`, `fairly`, `pretty`, `go ahead and`, `feel free to`, `don't hesitate to`, `as you know`, `as mentioned`, `in this case/context/scenario/situation`, `at the end of the day`, `at this point in time`.
+
+### Changed
+
+- **`core/base.md`** trimmed by ~13 %: merged "No preamble" and "diff is the report" bullets; collapsed `Precision`, `Modular`, `No speculation` to tighter phrasing; removed redundant prose in `Precedence` and `Library first`. Always-on `AGENTS.md` now costs ~931 tokens (was ~1 019); compact system prompt costs ~562 tokens (was ~650).
+- **`core/expanded.md`** gains a **Context compression** section: rules for summarising resolved work, referencing instead of re-quoting, and triggering on `/compact` or long conversations.
+
+### Fixed
+
+- Idempotency of the `"quickly fix …"` test case: `quickly` is now only stripped as a leading politeness marker, not mid-sentence, so a second pass leaves the output unchanged.
+
 ## [2.0.0] — 2026-11-01
 
 The release that turns a prompt file into an installable, agent-compatible plugin.

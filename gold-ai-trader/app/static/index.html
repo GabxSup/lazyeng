@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#06070a">
+  <meta name="color-scheme" content="dark">
+  <title>AURUM AI · XAU/USD Autonomous Desk</title>
+  <meta name="description" content="AURUM AI — an autonomous XAU/USD trading desk with a deterministic risk governor and optional AI analyst.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <linearGradient id="brandGold" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7E2B4"/><stop offset="1" stop-color="#C79345"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-settings" viewBox="0 0 24 24">
+    <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/>
+    <circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>
+  </symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 6.5"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M18.4 9A7 7 0 0 0 6 6.7L4 12M5.6 15A7 7 0 0 0 18 17.3l2-5.3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7Z"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.5-7 5 14 2.5-7h4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="m3 3 18 18M10.6 5.2A11.8 11.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a11.8 11.8 0 0 0 5.4-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-square" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-arrow-down-right" viewBox="0 0 24 24"><path d="m7 7 10 10M17 8v9H8"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="m2 2 20 20M9 17h6M5 12.5a11 11 0 0 1 4-2.4M2 8.8A16 16 0 0 1 7.5 5.7M15.8 6.3A16 16 0 0 1 22 8.8M8.5 16.5a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/></symbol>
+  <symbol id="i-flat" viewBox="0 0 24 24"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="M19 16.5 20 19l2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"/></symbol>
+</svg>
+
+<div id="boot" class="boot-screen">
+  <div class="boot-mark">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 20.5 20h-3.6L12 10.5 7.1 20H3.5L12 3.5Z" fill="url(#brandGold)"/><path d="M8.7 15.4h6.6v2.1H8.7z" fill="#E6B86A" opacity=".75"/></svg>
+  </div>
+  <div style="font-size:11px;letter-spacing:.18em;color:#c7b184">AURUM <span style="color:#6f7684">AI</span></div>
+  <div class="boot-bar"><span></span></div>
+  <div id="boot-msg">Securing session</div>
+</div>
+
+<div id="login" class="login-screen" hidden>
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 20.5 20h-3.6L12 10.5 7.1 20H3.5L12 3.5Z" fill="url(#brandGold)"/><path d="M8.7 15.4h6.6v2.1H8.7z" fill="#E6B86A" opacity=".75"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">AURUM <span>AI</span></div>
+        <div class="brand-sub">Autonomous gold desk</div>
+      </div>
+    </div>
+    <div class="login-kicker">Operator access</div>
+    <h1>Sign in to the desk</h1>
+    <p class="login-copy">This terminal controls automated XAU/USD execution. Authenticate to view account state and manage the engine.</p>
+    <form id="login-form" class="login-form" autocomplete="on">
+      <input type="text" name="username" autocomplete="username" value="operator" hidden>
+      <label class="field-label" for="login-password">Dashboard password</label>
+      <div class="input-wrap">
+        <input id="login-password" class="text-input" type="password" name="password" placeholder="Enter your operator password" autocomplete="current-password" required>
+        <button type="button" class="reveal-btn" id="login-reveal" aria-label="Show password">
+          <svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg>
+        </button>
+      </div>
+      <button class="btn btn-primary btn-block" id="login-submit" type="submit">Enter trading desk</button>
+      <div class="login-error" id="login-error" role="alert"></div>
+    </form>
+    <div class="login-note">
+      <svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>
+      <span>Access is protected by server-side session authentication. AURUM never stores broker passwords in the browser.</span>
+    </div>
+    <div class="login-foot">AURUM AI · XAU/USD · <span id="login-version">v1.0.0</span></div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="AURUM AI dashboard">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 20.5 20h-3.6L12 10.5 7.1 20H3.5L12 3.5Z" fill="url(#brandGold)"/><path d="M8.7 15.4h6.6v2.1H8.7z" fill="#E6B86A" opacity=".75"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">AURUM <span>AI</span></div>
+        <span class="brand-sub">Autonomous gold desk</span>
+      </div>
+    </a>
+    <div class="topbar-center">
+      <span class="pill" id="market-pill"><span class="dot idle" id="market-dot"></span><span id="market-label">MARKET</span></span>
+      <button class="pill" id="btn-connection" type="button" title="Connection settings">
+        <span class="dot idle" id="conn-dot"></span><span id="conn-label">PAPER</span>
+        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+      </button>
+    </div>
+    <div class="topbar-right">
+      <div class="utc-clock" aria-label="Coordinated Universal Time">
+        <span class="time" id="clock-utc">--:--:--</span>
+        <span class="label">UTC</span>
+      </div>
+      <button class="icon-btn danger" id="btn-halt" type="button" title="Emergency halt — stop all new orders" aria-label="Emergency halt">
+        <svg class="icon" aria-hidden="true"><use href="#i-square"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" type="button" title="Engine settings" aria-label="Engine settings">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>
+      </button>
+      <button class="btn btn-primary auto-btn" id="btn-auto" type="button">
+        <span class="dot"></span>
+        <span id="auto-label"><span class="auto-full">Start auto</span><span class="auto-short">Start</span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="env-banner" id="env-banner">
+    <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+    <span><strong id="env-title">Simulation</strong> <span class="env-long" id="env-text">Synthetic XAU/USD feed. No real capital is at risk.</span></span>
+    <button class="env-action" id="env-action" type="button">Connect MT5 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+  </div>
+
+  <main class="dashboard">
+    <section class="card chart-card" aria-label="XAUUSD price chart">
+      <div class="chart-head">
+        <div class="asset-identity">
+          <div class="asset-mark" aria-hidden="true">Au</div>
+          <div>
+            <div class="asset-name">XAU / USD <em>spot</em></div>
+            <div class="asset-meta"><span class="live-dot"></span><span id="chart-session">Market</span><span class="sep"></span><span id="chart-feed-type">Simulated feed</span></div>
+          </div>
+        </div>
+        <div class="price-hero">
+          <div class="price-main" id="hero-price">—</div>
+          <div class="price-change flat" id="hero-change">—</div>
+          <div class="price-spread" id="quote-spread">spread —</div>
+        </div>
+        <div class="chart-head-right">
+          <div class="tf-tabs" role="group" aria-label="Chart timeframe">
+            <button class="tf-btn" data-timeframe="M5" type="button">5m</button>
+            <button class="tf-btn" data-timeframe="M15" type="button">15m</button>
+            <button class="tf-btn" data-timeframe="M30" type="button">30m</button>
+            <button class="tf-btn" data-timeframe="H1" type="button">1h</button>
+          </div>
+          <button class="icon-btn" id="btn-refresh-chart" type="button" title="Refresh chart" aria-label="Refresh chart">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-refresh"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="chart-subbar" id="chart-subbar">
+        <span class="ohlc-pair"><b>O</b><span id="o-value">—</span></span>
+        <span class="ohlc-pair"><b>H</b><span id="h-value">—</span></span>
+        <span class="ohlc-pair"><b>L</b><span id="l-value">—</span></span>
+        <span class="ohlc-pair"><b>C</b><span id="c-value">—</span></span>
+        <span class="spacer"></span>
+        <span class="legend hide-mobile"><i class="ema-fast"></i>EMA 20</span>
+        <span class="legend hide-mobile"><i class="ema-slow"></i>EMA 50</span>
+        <span class="legend hide-mobile"><i class="entry"></i>ENTRY</span>
+      </div>
+      <div class="chart-area" id="chart-area">
+        <canvas id="chart-canvas" aria-label="XAUUSD candlestick chart with EMA overlays"></canvas>
+        <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+        <div class="chart-empty" id="chart-empty">Waiting for market data…</div>
+      </div>
+      <div class="chart-foot">
+        <span class="chart-source" id="chart-source">Simulated feed</span>
+        <span class="dot"></span>
+        <span class="mono" id="chart-range">—</span>
+        <div class="chart-foot-right">
+          <span class="hide-mobile">Updated <span class="mono" id="chart-updated">—</span> local</span>
+          <span class="pill" id="chart-latency-pill"><span class="dot idle"></span><span id="chart-latency">0ms</span></span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-stack">
+      <section class="card account-card" aria-label="Account overview">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Account</div>
+            <div class="card-sub" id="account-sub">Paper · AURUM Simulator</div>
+          </div>
+          <div class="card-actions"><span class="badge" id="account-type">DEMO</span></div>
+        </div>
+        <div class="card-body" style="padding-top:7px">
+          <div class="account-top">
+            <div>
+              <div class="metric-label">Total equity</div>
+              <div class="account-equity"><span id="account-equity">—</span><span class="account-currency">USD</span></div>
+              <div class="account-delta flat" id="account-delta"><span id="account-pnl">—</span><span class="pct" id="account-pnl-pct">today</span></div>
+            </div>
+            <div class="account-chart"><canvas id="equity-spark" aria-hidden="true"></canvas></div>
+          </div>
+          <div class="account-meta">
+            <div><div class="label">Balance</div><div class="value" id="account-balance">—</div></div>
+            <div><div class="label">Free margin</div><div class="value" id="account-free-margin">—</div></div>
+            <div><div class="label">Margin level</div><div class="value" id="account-margin-level">—</div></div>
+          </div>
+          <div class="account-foot">
+            <span class="dot live" id="account-dot"></span>
+            <span id="account-server">—</span>
+            <span>·</span>
+            <span id="account-login">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card signal-card" id="signal-card" data-side="wait" aria-label="AI trading signal">
+        <div class="card-head">
+          <div>
+            <div class="card-title">AI signal</div>
+            <div class="card-sub" id="signal-sub">XAU/USD · —</div>
+          </div>
+          <div class="card-actions"><span class="badge badge-wait" id="signal-status">WAITING</span></div>
+        </div>
+        <div id="signal-content">
+          <div class="signal-hero">
+            <div>
+              <div class="signal-action" id="signal-action">WAIT</div>
+              <div class="signal-symbol"><b id="signal-symbol">XAU/USD</b> · <span id="signal-regime">—</span> · <span id="signal-age">—</span></div>
+            </div>
+            <div class="conf-ring" id="signal-ring" style="--value:0">
+              <div class="conf-value"><span id="signal-conf">—</span><small>%</small></div>
+            </div>
+          </div>
+          <ul class="signal-reasons" id="signal-reasons"><li>Scanning indicators and market regime…</li></ul>
+          <div class="signal-levels">
+            <span>ENTRY <b id="signal-entry">—</b></span>
+            <span>SL <b id="signal-sl">—</b></span>
+            <span>TP <b id="signal-tp">—</b></span>
+            <span>R:R <b id="signal-rr">—</b></span>
+          </div>
+          <div class="signal-stats">
+            <div><span>ADX</span><b id="signal-adx">—</b></div>
+            <div><span>ATR</span><b id="signal-atr">—</b></div>
+            <div><span>SPREAD</span><b id="signal-spread">—</b></div>
+          </div>
+          <div class="signal-foot">
+            <div class="signal-ai-label">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-spark"/></svg>
+              <strong id="signal-ai">Quant core</strong>
+            </div>
+            <button class="btn btn-ghost btn-xs" id="btn-analyze" type="button">
+              <svg class="icon icon-sm" aria-hidden="true"><use href="#i-zap"/></svg>
+              Analyze now
+            </button>
+          </div>
+        </div>
+        <div class="signal-empty" id="signal-empty" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg>
+          <strong>Awaiting first scan</strong>
+          <span>The engine is warming up its indicators.</span>
+        </div>
+      </section>
+    </aside>
+
+    <section class="card positions-card" aria-label="Open positions and recent fills">
+      <div class="positions-head">
+        <div class="tabs" role="tablist" aria-label="Position views">
+          <button class="tab active" id="tab-positions" type="button" role="tab" aria-selected="true" aria-controls="panel-positions">Positions <span class="tab-count" id="positions-count">0</span></button>
+          <button class="tab" id="tab-history" type="button" role="tab" aria-selected="false" aria-controls="panel-history">Recent fills <span class="tab-count" id="history-count">0</span></button>
+        </div>
+        <div class="positions-summary">
+          <span>Unrealised <b id="positions-pnl">$0.00</b></span>
+          <span class="hide-mobile">Exposure <b id="positions-exposure">$0.00</b></span>
+          <span class="hide-mobile">Risk at stop <b id="positions-risk">$0.00</b></span>
+        </div>
+      </div>
+      <div class="positions-table-wrap" id="panel-positions" role="tabpanel" aria-labelledby="tab-positions">
+        <table class="data" id="positions-table">
+          <thead>
+            <tr><th>Position</th><th>Lots</th><th>Entry / Current</th><th>Stop / Target</th><th>P&amp;L</th><th><span class="sr-only">Action</span></th></tr>
+          </thead>
+          <tbody id="positions-body"></tbody>
+        </table>
+        <div class="positions-empty" id="positions-empty">
+          <svg class="icon" aria-hidden="true"><use href="#i-flat"/></svg>
+          <strong>Flat — no open exposure</strong>
+          <span>The engine will size a position only after every risk check clears.</span>
+        </div>
+      </div>
+      <div class="positions-table-wrap" id="panel-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+        <table class="data" id="history-table">
+          <thead>
+            <tr><th>Closed</th><th>Side</th><th>Lots</th><th>Entry → Exit</th><th>P&amp;L</th><th>Reason</th></tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+        <div class="positions-empty history-empty" id="history-empty">
+          <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+          <strong>No closed trades yet</strong>
+          <span>Completed fills and their realised P&amp;L will appear here.</span>
+        </div>
+      </div>
+      <div class="positions-footer">
+        <span>Open risk <b class="mono" id="positions-open-risk">$0.00</b></span>
+        <span class="hide-mobile">·</span>
+        <span class="hide-mobile" id="bracket-mode" title="Automatic stop-loss and take-profit management">Auto SL/TP active</span>
+        <button class="btn btn-danger btn-xs" id="btn-flatten" type="button" disabled>
+          <svg class="icon icon-sm" aria-hidden="true"><use href="#i-x"/></svg>
+          Flatten all
+        </button>
+      </div>
+    </section>
+
+    <section class="card risk-card" id="risk-card" data-allowed="true" aria-label="Risk governor status">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Risk governor</div>
+          <div class="card-sub">Deterministic · every order</div>
+        </div>
+        <div class="card-actions"><span class="badge badge-gold" id="risk-badge">CLEAR</span></div>
+      </div>
+      <div class="risk-verdict">
+        <div class="verdict-mark"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></div>
+        <div style="min-width:0">
+          <div class="verdict-title" id="risk-title">Guardrails clear</div>
+          <div class="verdict-detail" id="risk-detail">All checks satisfied.</div>
+        </div>
+      </div>
+      <div class="risk-meters">
+        <div class="risk-meter">
+          <div class="meter-label"><span>Daily loss</span><b id="risk-daily">0.00 / 3.00%</b></div>
+          <div class="meter"><span id="risk-daily-fill"></span></div>
+        </div>
+        <div class="risk-meter">
+          <div class="meter-label"><span>Drawdown</span><b id="risk-dd">0.00 / 10.00%</b></div>
+          <div class="meter danger"><span id="risk-dd-fill"></span></div>
+        </div>
+      </div>
+      <div class="risk-checks" id="risk-checks"></div>
+      <div class="risk-foot">
+        <span class="micro">Risk / trade <b id="risk-budget" style="color:#b7bec9;font-family:var(--font-mono)">—</b></span>
+        <button class="risk-more" id="risk-more" type="button">All checks</button>
+        <button class="btn btn-danger btn-xs" id="btn-clear-halt" type="button" hidden>Clear halt</button>
+      </div>
+    </section>
+
+    <section class="card performance-card" aria-label="Lifetime performance">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Performance</div>
+          <div class="card-sub" id="perf-source">Lifetime · paper</div>
+        </div>
+        <div class="card-actions"><span class="badge" id="perf-mode">PAPER</span></div>
+      </div>
+      <div class="perf-grid">
+        <div class="perf-cell"><div class="label">Net P&amp;L</div><div class="value" id="perf-pnl">—</div></div>
+        <div class="perf-cell"><div class="label">Win rate</div><div class="value" id="perf-win">—</div></div>
+        <div class="perf-cell"><div class="label">Profit factor</div><div class="value" id="perf-pf">—</div></div>
+        <div class="perf-cell"><div class="label">Closed trades</div><div class="value" id="perf-trades">—</div></div>
+      </div>
+      <div class="perf-foot">
+        <span>Avg win <b id="perf-avg-win">—</b></span>
+        <span>Avg loss <b id="perf-avg-loss">—</b></span>
+        <span class="hide-mobile">Expectancy <b id="perf-expectancy">—</b></span>
+      </div>
+    </section>
+
+    <section class="card backtest-card" aria-label="Strategy backtest">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Strategy lab</div>
+          <div class="card-sub" id="bt-sub">Quant core + dynamic brackets · M5</div>
+        </div>
+        <div class="card-actions"><span class="badge" id="bt-badge">NO TEST</span></div>
+      </div>
+      <div class="backtest-top">
+        <p class="backtest-copy">Stress the quant core and dynamic brackets on synthetic or imported MT5 history. Stops are assumed first when both levels touch.</p>
+        <div class="bt-controls">
+          <select class="bt-select" id="bt-days" aria-label="Backtest period">
+            <option value="7">7d</option>
+            <option value="30" selected>30d</option>
+            <option value="60">60d</option>
+          </select>
+          <button class="btn btn-ghost btn-xs" id="btn-run-backtest" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-play"/></svg>Run</button>
+          <button class="btn btn-outline btn-xs" id="btn-bt-import" type="button" title="Import MT5 CSV history"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-download"/></svg>CSV</button>
+        </div>
+      </div>
+      <div class="bt-body">
+        <div class="bt-loading" id="bt-loading" hidden><span class="spin"></span>Running simulated fills…</div>
+        <div class="bt-empty" id="bt-empty">No backtest this session. Run a test to see return, drawdown and trade quality.</div>
+        <div id="bt-result" hidden>
+          <div class="bt-result">
+            <div class="bt-result-chart"><canvas id="bt-spark" aria-hidden="true"></canvas></div>
+            <div class="bt-metrics">
+              <div class="bt-metric"><div class="label">Return</div><div class="value" id="bt-return">—</div></div>
+              <div class="bt-metric"><div class="label">Max DD</div><div class="value" id="bt-dd">—</div></div>
+              <div class="bt-metric"><div class="label">Trades</div><div class="value" id="bt-trades">—</div></div>
+              <div class="bt-metric"><div class="label">Profit factor</div><div class="value" id="bt-pf">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bt-foot">
+        <span id="bt-meta">Synthetic data · not a forecast</span>
+        <button class="btn btn-outline btn-xs" id="btn-bt-report" type="button" hidden>Report <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></button>
+      </div>
+    </section>
+
+    <section class="card activity-card" aria-label="Engine activity">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Activity</div>
+          <div class="card-sub">Engine, risk and execution events</div>
+        </div>
+        <div class="card-actions"><span class="pill"><span class="dot live"></span><span id="activity-state">LIVE</span></span></div>
+      </div>
+      <ul class="activity-list" id="activity-list"></ul>
+      <div class="activity-more">
+        <span>Last <span id="activity-count">0</span> events</span>
+        <button class="btn btn-ghost btn-xs" id="btn-view-logs" type="button">Full log</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-brand">AURUM AI</span>
+    <span class="dot"></span>
+    <span>Autonomous XAU/USD execution</span>
+    <span class="dot"></span>
+    <span>Not financial advice. Leveraged gold trading can lose more than your deposit.</span>
+    <div class="footer-right">
+      <span class="mono" id="footer-mode">SIMULATED</span>
+      <span class="dot"></span>
+      <span id="footer-latency">0 ms</span>
+      <span class="dot"></span>
+      <span id="footer-scan">Engine idle</span>
+      <span class="dot"></span>
+      <span class="mono" id="footer-clock">—</span>
+    </div>
+  </footer>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-scrim" data-close-modal></div>
+  <div class="modal-panel" id="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <div style="min-width:0">
+        <div class="modal-title" id="modal-title">Dialog</div>
+        <div class="modal-sub" id="modal-sub"></div>
+      </div>
+      <button class="icon-btn modal-close" id="modal-close" type="button" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div id="drawer" class="drawer" hidden>
+  <div class="drawer-scrim" data-close-drawer></div>
+  <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <div class="drawer-head">
+      <div style="min-width:0">
+        <div class="modal-title" id="drawer-title">Engine settings</div>
+        <div class="modal-sub">Changes apply to the next scan. Open positions keep their existing brackets.</div>
+      </div>
+      <button class="icon-btn modal-close" id="drawer-close" type="button" aria-label="Close settings"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <form id="settings-form" style="display:flex;flex-direction:column;min-height:0;flex:1" novalidate>
+      <div class="drawer-body" id="settings-fields"></div>
+      <div class="drawer-foot">
+        <span class="settings-error" id="settings-error"></span>
+        <button class="btn btn-ghost" id="btn-settings-cancel" type="button">Cancel</button>
+        <button class="btn btn-primary" id="btn-settings-save" type="submit">Save changes</button>
+      </div>
+    </form>
+  </aside>
+</div>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<noscript><div class="noscript">AURUM AI requires JavaScript to render the live trading dashboard.</div></noscript>
+<script src="/app.js" defer></script>
+</body>
+</html>

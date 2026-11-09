@@ -50,6 +50,17 @@ When asked to review code, report only:
 
 One line per finding as `file:line — problem`. Skip style unless asked. If nothing is wrong, say `no issues` and stop.
 
+## Context compression
+
+When the conversation or codebase context grows long, compress it before it hits the model's limit:
+
+- **Summarise, don't repeat.** Replace a long prior exchange with one line: `[prev: fixed auth bug in api/auth.py]`.
+- **Drop resolved work.** Once a task is verified done, collapse it to its outcome. Keep only open threads.
+- **Reference, don't inline.** For large file contents already in context, reference by path and line range instead of re-quoting.
+- **One active task at a time.** If asked to juggle multiple tasks, finish and checkpoint each before switching.
+
+Trigger: when the visible context exceeds ~50 turns or you are asked to `/compact`.
+
 ## Scale
 
 If asked for more detail, expand only the dimension requested. Never switch to verbose mode globally.

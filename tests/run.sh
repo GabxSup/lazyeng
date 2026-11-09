@@ -180,6 +180,41 @@ assert_eq "markdown bullets keep their markers and line breaks" \
 - do the other thing" \
     "$(printf '%s\n' "$bullets" | ./compress.sh)"
 
+# --tokens flag prints estimate to stderr, stdout unchanged
+tokens_out=$(./compress.sh --tokens "Please sort the list" 2>/dev/null)
+tokens_err=$(./compress.sh --tokens "Please sort the list" 2>&1 >/dev/null)
+assert_eq "--tokens stdout is the compressed prompt" "sort the list" "$tokens_out"
+assert_contains "--tokens stderr has token estimate" "~tokens:" "$tokens_err"
+
+# --file flag edits a file in place
+FILE_TMP=$(mktemp)
+printf 'Please just do the thing.\n' > "$FILE_TMP"
+./compress.sh --file "$FILE_TMP"
+assert_eq "--file rewrites the file" "do the thing." "$(cat "$FILE_TMP")"
+rm -f "$FILE_TMP"
+
+# duplicate consecutive paragraphs are collapsed
+dup_in='Fix the bug.
+
+Fix the bug.
+
+Add a test.'
+dup_want='Fix the bug.
+
+Add a test.'
+assert_eq "duplicate paragraphs are collapsed" "$dup_want" "$(printf '%s\n' "$dup_in" | ./compress.sh)"
+
+# new filler words: literally, go ahead and, as you know
+assert_eq "filler: literally" \
+    "fix this" \
+    "$(./compress.sh "literally fix this")"
+assert_eq "filler: go ahead and (leading)" \
+    "fix this" \
+    "$(./compress.sh "go ahead and fix this")"
+assert_eq "filler: as you know" \
+    "the sky is blue." \
+    "$(./compress.sh "as you know, the sky is blue.")"
+
 # ── install.sh behaviour ─────────────────────────────────────────────────────
 group "install.sh"
 assert_exit "--list exits 0" 0 ./install.sh --list

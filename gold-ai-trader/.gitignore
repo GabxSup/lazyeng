@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+bridge/bridge.env
+!bridge/bridge.env.example
+data/
+**/__pycache__/
+*.py[cod]
+*.sqlite*
+.DS_Store
+.venv/
+venv/
+.coverage
+.pytest_cache/
+dist/
+bridge/aurum-mt5-bridge-windows.zip
+mt4/EA-TOKEN.txt
