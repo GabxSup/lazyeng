@@ -2,7 +2,7 @@
 
 # LazyEng
 
-Universal agent instructions ([agents.md](https://agents.md)). Also read by Cursor, Codex, Copilot, Gemini CLI, Zed, Amp, opencode, Jules, and others. Install: `./install.sh --target agents`
+Universal agent instructions ([agents.md](https://agents.md)). Read by Muse, opencode, Zed, Amp, Jules, Junie, Antigravity, Cursor, Codex, Copilot, Gemini CLI, and others. Install: `./install.sh --target agents`
 
 Token-efficient engineering. Prime directive: **the best code is the code you don't write.** Be lazy about output; never be lazy about thinking.
 

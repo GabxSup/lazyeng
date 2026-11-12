@@ -52,7 +52,9 @@ assert_exit "build.sh --check passes on a fresh build" 0 ./build.sh --check
 
 missing=""
 for f in system-prompt.md system-prompt-compact.md AGENTS.md CLAUDE.md GEMINI.md \
-         copilot-instructions.md CONVENTIONS.md cursor/lazyeng.mdc windsurf/lazyeng.md \
+         copilot-instructions.md copilot/lazyeng.instructions.md \
+         junie/AGENTS.md amazonq/lazyeng.md \
+         CONVENTIONS.md cursor/lazyeng.mdc windsurf/lazyeng.md \
          cline/lazyeng.md skills/lazyeng/SKILL.md README.md; do
     [ -s "dist/$f" ] || missing="$missing $f"
 done
@@ -83,6 +85,20 @@ assert_eq "cursor rule starts with frontmatter" "---" "$(head -1 dist/cursor/laz
 assert_contains "cursor rule is alwaysApply" "alwaysApply: true" "$(cat dist/cursor/lazyeng.mdc)"
 assert_eq "windsurf rule starts with frontmatter" "---" "$(head -1 dist/windsurf/lazyeng.md)"
 assert_contains "windsurf rule is always_on" "trigger: always_on" "$(cat dist/windsurf/lazyeng.md)"
+
+# Junie: .junie/AGENTS.md — plain markdown, has agent mode
+assert_contains "junie adapter has agent mode" "## Agent mode" "$(cat dist/junie/AGENTS.md)"
+
+# Amazon Q: .amazonq/rules/lazyeng.md — plain markdown, no frontmatter required
+assert_contains "amazonq adapter has agent mode" "## Agent mode" "$(cat dist/amazonq/lazyeng.md)"
+case $(head -1 dist/amazonq/lazyeng.md) in
+    "---") bad "amazonq adapter has no frontmatter" "Amazon Q does not use frontmatter" ;;
+    *) ok "amazonq adapter has no frontmatter" ;;
+esac
+
+# Copilot modular: needs YAML frontmatter with applyTo
+assert_eq "copilot-instructions starts with frontmatter" "---" "$(head -1 dist/copilot/lazyeng.instructions.md)"
+assert_contains "copilot-instructions has applyTo" "applyTo:" "$(cat dist/copilot/lazyeng.instructions.md)"
 assert_eq "skill starts with frontmatter" "---" "$(head -1 dist/skills/lazyeng/SKILL.md)"
 assert_contains "skill name matches its directory" "name: lazyeng" "$(cat dist/skills/lazyeng/SKILL.md)"
 
@@ -263,6 +279,20 @@ assert_eq "no markers left behind" "0" "$(grep -c 'lazyeng:begin' "$P/AGENTS.md"
 assert_exit "uninstalling an owned target" 0 ./install.sh --target cursor --dir "$P" --uninstall
 [ -f "$P/.cursor/rules/lazyeng.mdc" ] && bad "owned file removed on uninstall" || ok "owned file removed on uninstall"
 
+# new owned targets: junie and amazonq
+assert_exit "junie installs" 0 ./install.sh --target junie --dir "$P"
+[ -f "$P/.junie/AGENTS.md" ] && ok "junie file created" || bad "junie file created"
+assert_exit "junie uninstall removes file" 0 ./install.sh --target junie --dir "$P" --uninstall
+[ -f "$P/.junie/AGENTS.md" ] && bad "junie file removed on uninstall" || ok "junie file removed on uninstall"
+
+assert_exit "amazonq installs" 0 ./install.sh --target amazonq --dir "$P"
+[ -f "$P/.amazonq/rules/lazyeng.md" ] && ok "amazonq file created" || bad "amazonq file created"
+assert_exit "amazonq uninstall removes file" 0 ./install.sh --target amazonq --dir "$P" --uninstall
+[ -f "$P/.amazonq/rules/lazyeng.md" ] && bad "amazonq file removed on uninstall" || ok "amazonq file removed on uninstall"
+
+assert_exit "copilot-instructions installs" 0 ./install.sh --target copilot-instructions --dir "$P"
+[ -f "$P/.github/instructions/lazyeng.instructions.md" ] && ok "copilot-instructions file created" || bad "copilot-instructions file created"
+
 # clean file that LazyEng created is deleted, not left empty
 Q="$TMP/created"
 mkdir -p "$Q"
@@ -280,7 +310,9 @@ assert_contains "LICENSE is MIT" "MIT License" "$(cat LICENSE)"
 missing_docs=""
 for f in AGENTS.md CLAUDE.md GEMINI.md .github/copilot-instructions.md CONVENTIONS.md \
          .cursor/rules/lazyeng.mdc .windsurf/rules/lazyeng.md .clinerules/lazyeng.md \
-         .claude/skills/lazyeng/SKILL.md; do
+         .claude/skills/lazyeng/SKILL.md \
+         .junie/AGENTS.md .amazonq/rules/lazyeng.md \
+         .github/instructions/lazyeng.instructions.md; do
     grep -qF "$f" README.md || missing_docs="$missing_docs $f"
 done
 assert_eq "README documents every install destination" "" "$missing_docs"

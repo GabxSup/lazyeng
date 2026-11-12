@@ -42,11 +42,14 @@ Paste a prompt file into any model's system prompt — no tooling required:
 
 | Target | Installs to | Read by |
 |--------|-------------|---------|
-| `agents` | `AGENTS.md` | [Codex, Cursor, Copilot, Gemini CLI, Zed, Amp, opencode](https://agents.md) |
+| `agents` | `AGENTS.md` | [Codex, Cursor, Muse, opencode, Zed, Amp, Jules, Antigravity, Copilot, Gemini CLI](https://agents.md) |
 | `claude` | `CLAUDE.md` | Claude Code |
 | `claude-skill` | `.claude/skills/lazyeng/SKILL.md` | [Claude Code skills](https://code.claude.com/docs/en/skills) |
-| `gemini` | `GEMINI.md` | [Gemini CLI](https://geminicli.com/docs/cli/gemini-md/) |
-| `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
+| `gemini` | `GEMINI.md` | [Gemini CLI](https://geminicli.com/docs/cli/gemini-md/) / Antigravity (native name) |
+| `copilot` | `.github/copilot-instructions.md` | GitHub Copilot (global repo) |
+| `copilot-instructions` | `.github/instructions/lazyeng.instructions.md` | GitHub Copilot (modular, path-scoped) |
+| `junie` | `.junie/AGENTS.md` | [JetBrains Junie](https://www.jetbrains.com/junie/) |
+| `amazonq` | `.amazonq/rules/lazyeng.md` | [Amazon Q Developer](https://aws.amazon.com/q/developer/) |
 | `cursor` | `.cursor/rules/lazyeng.mdc` | [Cursor project rules](https://cursor.com/docs/rules) |
 | `windsurf` | `.windsurf/rules/lazyeng.md` | Windsurf rules |
 | `cline` | `.clinerules/lazyeng.md` | [Cline rules](https://docs.cline.bot/customization/cline-rules) |
@@ -56,8 +59,9 @@ Every generated file is also committed under [`dist/`](dist), so you can copy on
 `curl` a single raw file if you'd rather not clone.
 
 Formats follow each tool's current docs: Cursor requires the `.mdc` extension plus
-frontmatter (`alwaysApply: true`), Windsurf requires `trigger: always_on`, and the skill ships
-YAML frontmatter that validates against the [Agent Skills specification](https://agentskills.io/specification).
+frontmatter (`alwaysApply: true`), Windsurf requires `trigger: always_on`, Copilot modular
+instructions use `applyTo: "**"` frontmatter, and the skill ships YAML frontmatter that
+validates against the [Agent Skills specification](https://agentskills.io/specification).
 Global installs (`--scope global`) are offered only where a tool documents a home-directory
 file — use `--dry-run` to see the exact path before writing anything.
 
@@ -108,7 +112,7 @@ agent guidance. The extra tokens are the part that stops an agent from doing dam
 |----------------|---------------|
 | `dist/system-prompt.md` | `base` + `expanded` |
 | `dist/system-prompt-compact.md` | `base` |
-| `dist/AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `copilot-instructions.md`, `cursor/`, `windsurf/`, `cline/`, `CONVENTIONS.md` | `base` + `agent` |
+| `dist/AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `copilot-instructions.md`, `junie/AGENTS.md`, `amazonq/lazyeng.md`, `copilot/lazyeng.instructions.md`, `cursor/`, `windsurf/`, `cline/`, `CONVENTIONS.md` | `base` + `agent` |
 | `dist/skills/lazyeng/SKILL.md` | `base` + `agent` + `expanded` |
 
 Always-on files get `base` + `agent` because every request pays for them. The skill is loaded

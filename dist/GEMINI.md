@@ -2,7 +2,7 @@
 
 # LazyEng
 
-Gemini CLI context file. Install: `./install.sh --target gemini`
+Gemini CLI / Antigravity context file. Install: `./install.sh --target gemini`
 
 Token-efficient engineering. Prime directive: **the best code is the code you don't write.** Be lazy about output; never be lazy about thinking.
 

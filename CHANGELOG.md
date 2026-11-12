@@ -3,10 +3,15 @@
 All notable changes to this project are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [SemVer](https://semver.org/).
 
-## [2.1.0] — 2026-11-08
+## [2.1.0] — 2026-11-11
 
 ### Added
 
+- **`junie` target** — installs to `.junie/AGENTS.md` for JetBrains Junie (project scope) and `~/.junie/AGENTS.md` (global scope).
+- **`amazonq` target** — installs to `.amazonq/rules/lazyeng.md` for Amazon Q Developer. Plain markdown, no frontmatter (matches Q's format).
+- **`copilot-instructions` target** — installs to `.github/instructions/lazyeng.instructions.md` for GitHub Copilot's modular path-scoped instructions format (uses `applyTo: "**"` frontmatter).
+- **Global scope for `agents`** — `--target agents --scope global` now installs to `~/.gemini/AGENTS.md`, the documented global path for Antigravity / Gemini CLI.
+- **Global scope for `junie`** — `--target junie --scope global` installs to `~/.junie/AGENTS.md`.
 - **`compress.sh --tokens`** — prints before/after token estimates (`chars/4`) to stderr alongside the compressed output.
 - **`compress.sh --file FILE`** — compresses `FILE` and overwrites it in place; use `-` to read stdin and write stdout (existing behavior).
 - **Paragraph deduplication** in `compress_document`: consecutive identical paragraphs (after whitespace normalisation) are collapsed to one copy. Catches copy-paste repetition common in long context pastes.
@@ -14,8 +19,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
-- **`core/base.md`** trimmed by ~13 %: merged "No preamble" and "diff is the report" bullets; collapsed `Precision`, `Modular`, `No speculation` to tighter phrasing; removed redundant prose in `Precedence` and `Library first`. Always-on `AGENTS.md` now costs ~931 tokens (was ~1 019); compact system prompt costs ~562 tokens (was ~650).
+- **`core/base.md`** trimmed by ~13%: merged "No preamble" and "diff is the report" bullets; collapsed `Precision`, `Modular`, `No speculation` to tighter phrasing; removed redundant prose in `Precedence` and `Library first`. Always-on `AGENTS.md` now costs ~936 tokens (was ~1 019); compact system prompt costs ~562 tokens (was ~650).
 - **`core/expanded.md`** gains a **Context compression** section: rules for summarising resolved work, referencing instead of re-quoting, and triggering on `/compact` or long conversations.
+- **`AGENTS.md` description** updated to list Muse, opencode, Zed, Amp, Jules, Junie, Antigravity alongside existing agents.
+- `--target all` now includes `junie`, `amazonq`, and `copilot-instructions` in the project-scope batch install.
 
 ### Fixed
 

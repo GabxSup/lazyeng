@@ -8,13 +8,16 @@ Every file here is generated from `core/*.md` by `build.sh`. Never edit them by 
 |------|----------------|--------------|
 | `system-prompt.md` | any chat UI | paste as system prompt |
 | `system-prompt-compact.md` | any API | `system` message |
-| `AGENTS.md` | Codex, Cursor, Copilot, Gemini CLI, Zed, Amp, opencode | `AGENTS.md` |
+| `AGENTS.md` | Muse, opencode, Zed, Amp, Jules, Cursor, Codex, Copilot, Gemini CLI, Antigravity | `AGENTS.md` |
 | `CLAUDE.md` | Claude Code | `CLAUDE.md` |
-| `GEMINI.md` | Gemini CLI | `GEMINI.md` |
+| `GEMINI.md` | Gemini CLI / Antigravity | `GEMINI.md` |
 | `copilot-instructions.md` | GitHub Copilot | `.github/copilot-instructions.md` |
+| `copilot/lazyeng.instructions.md` | GitHub Copilot (modular) | `.github/instructions/lazyeng.instructions.md` |
 | `cursor/lazyeng.mdc` | Cursor | `.cursor/rules/lazyeng.mdc` |
 | `windsurf/lazyeng.md` | Windsurf | `.windsurf/rules/lazyeng.md` |
 | `cline/lazyeng.md` | Cline | `.clinerules/lazyeng.md` |
+| `junie/AGENTS.md` | JetBrains Junie | `.junie/AGENTS.md` |
+| `amazonq/lazyeng.md` | Amazon Q Developer | `.amazonq/rules/lazyeng.md` |
 | `CONVENTIONS.md` | Aider | `CONVENTIONS.md` |
 | `skills/lazyeng/SKILL.md` | Agent Skills clients | `.claude/skills/lazyeng/SKILL.md` |
 

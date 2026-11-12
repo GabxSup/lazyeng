@@ -53,7 +53,7 @@ Options:
   -h, --help          show this help
   -V, --version       show version
 
-Targets: agents claude claude-skill gemini copilot cursor windsurf cline aider
+Targets: agents claude claude-skill gemini copilot copilot-instructions junie amazonq cursor windsurf cline aider
 
 Examples:
   ./install.sh --target claude
@@ -87,15 +87,18 @@ done
 # Human-readable path for the resolved target, used by --list and messages.
 describe() {
     case $1 in
-        agents)       echo "AGENTS.md — Codex, Cursor, Copilot, Gemini CLI, Zed, Amp, opencode" ;;
-        claude)       echo "CLAUDE.md — Claude Code" ;;
-        claude-skill) echo ".claude/skills/lazyeng/SKILL.md — Claude Code skill (Agent Skills standard)" ;;
-        gemini)       echo "GEMINI.md — Gemini CLI" ;;
-        copilot)      echo ".github/copilot-instructions.md — GitHub Copilot" ;;
-        cursor)       echo ".cursor/rules/lazyeng.mdc — Cursor project rule" ;;
-        windsurf)     echo ".windsurf/rules/lazyeng.md — Windsurf rule" ;;
-        cline)        echo ".clinerules/lazyeng.md — Cline rule" ;;
-        aider)        echo "CONVENTIONS.md — Aider" ;;
+        agents)              echo "AGENTS.md — Codex, Cursor, Muse, opencode, Zed, Amp, Jules, Junie (fallback), Antigravity, Copilot, Gemini CLI" ;;
+        claude)              echo "CLAUDE.md — Claude Code" ;;
+        claude-skill)        echo ".claude/skills/lazyeng/SKILL.md — Claude Code skill (Agent Skills standard)" ;;
+        gemini)              echo "GEMINI.md — Gemini CLI / Antigravity (native name)" ;;
+        copilot)             echo ".github/copilot-instructions.md — GitHub Copilot (global repo instructions)" ;;
+        copilot-instructions)echo ".github/instructions/lazyeng.instructions.md — GitHub Copilot (modular, path-scoped)" ;;
+        junie)               echo ".junie/AGENTS.md — JetBrains Junie" ;;
+        amazonq)             echo ".amazonq/rules/lazyeng.md — Amazon Q Developer" ;;
+        cursor)              echo ".cursor/rules/lazyeng.mdc — Cursor project rule" ;;
+        windsurf)            echo ".windsurf/rules/lazyeng.md — Windsurf rule" ;;
+        cline)               echo ".clinerules/lazyeng.md — Cline rule" ;;
+        aider)               echo "CONVENTIONS.md — Aider" ;;
         *)            return 1 ;;
     esac
 }
@@ -107,25 +110,31 @@ describe() {
 resolve() {
     _t=$1; _s=$2
     case $_t in
-        agents)       SRC=$DIST/AGENTS.md;                MODE=shared; _p=AGENTS.md ;;
-        claude)       SRC=$DIST/CLAUDE.md;                MODE=shared; _p=CLAUDE.md ;;
-        gemini)       SRC=$DIST/GEMINI.md;                MODE=shared; _p=GEMINI.md ;;
-        copilot)      SRC=$DIST/copilot-instructions.md;  MODE=shared; _p=.github/copilot-instructions.md ;;
-        aider)        SRC=$DIST/CONVENTIONS.md;           MODE=shared; _p=CONVENTIONS.md ;;
-        cursor)       SRC=$DIST/cursor/lazyeng.mdc;       MODE=owned;  _p=.cursor/rules/lazyeng.mdc ;;
-        windsurf)     SRC=$DIST/windsurf/lazyeng.md;      MODE=owned;  _p=.windsurf/rules/lazyeng.md ;;
-        cline)        SRC=$DIST/cline/lazyeng.md;         MODE=owned;  _p=.clinerules/lazyeng.md ;;
-        claude-skill) SRC=$DIST/skills/lazyeng/SKILL.md;  MODE=owned;  _p=.claude/skills/lazyeng/SKILL.md ;;
+        agents)              SRC=$DIST/AGENTS.md;                        MODE=shared; _p=AGENTS.md ;;
+        claude)              SRC=$DIST/CLAUDE.md;                        MODE=shared; _p=CLAUDE.md ;;
+        gemini)              SRC=$DIST/GEMINI.md;                        MODE=shared; _p=GEMINI.md ;;
+        copilot)             SRC=$DIST/copilot-instructions.md;          MODE=shared; _p=.github/copilot-instructions.md ;;
+        copilot-instructions)SRC=$DIST/copilot/lazyeng.instructions.md; MODE=owned;  _p=.github/instructions/lazyeng.instructions.md ;;
+        aider)               SRC=$DIST/CONVENTIONS.md;                   MODE=shared; _p=CONVENTIONS.md ;;
+        junie)               SRC=$DIST/junie/AGENTS.md;                  MODE=owned;  _p=.junie/AGENTS.md ;;
+        amazonq)             SRC=$DIST/amazonq/lazyeng.md;               MODE=owned;  _p=.amazonq/rules/lazyeng.md ;;
+        cursor)              SRC=$DIST/cursor/lazyeng.mdc;               MODE=owned;  _p=.cursor/rules/lazyeng.mdc ;;
+        windsurf)            SRC=$DIST/windsurf/lazyeng.md;              MODE=owned;  _p=.windsurf/rules/lazyeng.md ;;
+        cline)               SRC=$DIST/cline/lazyeng.md;                 MODE=owned;  _p=.clinerules/lazyeng.md ;;
+        claude-skill)        SRC=$DIST/skills/lazyeng/SKILL.md;          MODE=owned;  _p=.claude/skills/lazyeng/SKILL.md ;;
         *) return 1 ;;
     esac
 
     if [ "$_s" = global ]; then
         # Only where the tool documents a global instruction file.
         case $_t in
-            claude)       _p=.claude/CLAUDE.md ;;
-            claude-skill) _p=.claude/skills/lazyeng/SKILL.md ;;
-            gemini)       _p=.gemini/GEMINI.md ;;
-            windsurf)     _p=.codeium/windsurf/memories/global_rules.md ;;
+            claude)              _p=.claude/CLAUDE.md ;;
+            claude-skill)        _p=.claude/skills/lazyeng/SKILL.md ;;
+            gemini)              _p=.gemini/GEMINI.md ;;
+            agents)              _p=.gemini/AGENTS.md ;;          # Antigravity/Gemini CLI global
+            windsurf)            _p=.codeium/windsurf/memories/global_rules.md ;;
+            junie)               _p=.junie/AGENTS.md ;;
+            opencode)            _p=.config/opencode/AGENTS.md ;;
             *) return 1 ;;
         esac
         DEST=$HOME/$_p
@@ -245,7 +254,7 @@ do_owned_uninstall() {
 if [ "$LIST" = 1 ]; then
     say "target          project scope / global scope"
     say "--------------  ---------------------------------------------------------------"
-    for t in agents claude claude-skill gemini copilot cursor windsurf cline aider; do
+    for t in agents claude claude-skill gemini copilot copilot-instructions junie amazonq cursor windsurf cline aider; do
         line=$(describe "$t")
         if resolve "$t" global 2>/dev/null; then
             g=$DEST
@@ -272,7 +281,7 @@ if [ "$TARGET" = all ]; then
     if [ "$SCOPE" = global ]; then
         usage_error "--target all only works with --scope project; name global targets explicitly"
     fi
-    ALL="agents claude gemini copilot cursor windsurf cline aider"
+    ALL="agents claude gemini copilot copilot-instructions junie amazonq cursor windsurf cline aider"
 else
     ALL=$TARGET
 fi

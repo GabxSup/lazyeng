@@ -36,7 +36,8 @@ else
     OUT=$ROOT/dist
     rm -rf "$OUT"
 fi
-mkdir -p "$OUT/cursor" "$OUT/windsurf" "$OUT/cline" "$OUT/skills/lazyeng"
+mkdir -p "$OUT/cursor" "$OUT/windsurf" "$OUT/cline" "$OUT/skills/lazyeng" \
+         "$OUT/junie" "$OUT/amazonq" "$OUT/copilot"
 
 # emit <outfile> <title> <note> <part>...
 # Concatenates core/<part>.md with a generated banner, optional H1 and note.
@@ -80,7 +81,7 @@ emit "$OUT/system-prompt-compact.md" "" \
 
 # ── Always-on instruction files: compact on purpose, every request pays for these
 emit "$OUT/AGENTS.md" "LazyEng" \
-    "Universal agent instructions ([agents.md](https://agents.md)). Also read by Cursor, Codex, Copilot, Gemini CLI, Zed, Amp, opencode, Jules, and others. Install: \`./install.sh --target agents\`" \
+    "Universal agent instructions ([agents.md](https://agents.md)). Read by Muse, opencode, Zed, Amp, Jules, Junie, Antigravity, Cursor, Codex, Copilot, Gemini CLI, and others. Install: \`./install.sh --target agents\`" \
     base agent
 
 emit "$OUT/CLAUDE.md" "LazyEng" \
@@ -88,7 +89,7 @@ emit "$OUT/CLAUDE.md" "LazyEng" \
     base agent
 
 emit "$OUT/GEMINI.md" "LazyEng" \
-    "Gemini CLI context file. Install: \`./install.sh --target gemini\`" \
+    "Gemini CLI / Antigravity context file. Install: \`./install.sh --target gemini\`" \
     base agent
 
 emit "$OUT/copilot-instructions.md" "LazyEng" \
@@ -101,6 +102,25 @@ emit "$OUT/CONVENTIONS.md" "LazyEng" \
 
 emit "$OUT/cline/lazyeng.md" "LazyEng" \
     "Cline rules file. Install: \`./install.sh --target cline\`" \
+    base agent
+
+# Junie (JetBrains): reads .junie/AGENTS.md — identical content to AGENTS.md
+emit "$OUT/junie/AGENTS.md" "LazyEng" \
+    "JetBrains Junie guideline file. Install: \`./install.sh --target junie\`" \
+    base agent
+
+# Amazon Q Developer: reads .amazonq/rules/*.md — plain markdown, no frontmatter
+emit "$OUT/amazonq/lazyeng.md" "LazyEng" \
+    "Amazon Q Developer rules file. Install: \`./install.sh --target amazonq\`" \
+    base agent
+
+# GitHub Copilot modular instructions — requires YAML frontmatter with applyTo glob
+emit_yaml "$OUT/copilot/lazyeng.instructions.md" \
+    "---
+applyTo: \"**\"
+---" \
+    "LazyEng" \
+    "GitHub Copilot modular instructions (path-scoped). Install: \`./install.sh --target copilot-instructions\`" \
     base agent
 
 # Windsurf requires frontmatter on every rule file.
@@ -149,13 +169,16 @@ Every file here is generated from `core/*.md` by `build.sh`. Never edit them by 
 |------|----------------|--------------|
 | `system-prompt.md` | any chat UI | paste as system prompt |
 | `system-prompt-compact.md` | any API | `system` message |
-| `AGENTS.md` | Codex, Cursor, Copilot, Gemini CLI, Zed, Amp, opencode | `AGENTS.md` |
+| `AGENTS.md` | Muse, opencode, Zed, Amp, Jules, Cursor, Codex, Copilot, Gemini CLI, Antigravity | `AGENTS.md` |
 | `CLAUDE.md` | Claude Code | `CLAUDE.md` |
-| `GEMINI.md` | Gemini CLI | `GEMINI.md` |
+| `GEMINI.md` | Gemini CLI / Antigravity | `GEMINI.md` |
 | `copilot-instructions.md` | GitHub Copilot | `.github/copilot-instructions.md` |
+| `copilot/lazyeng.instructions.md` | GitHub Copilot (modular) | `.github/instructions/lazyeng.instructions.md` |
 | `cursor/lazyeng.mdc` | Cursor | `.cursor/rules/lazyeng.mdc` |
 | `windsurf/lazyeng.md` | Windsurf | `.windsurf/rules/lazyeng.md` |
 | `cline/lazyeng.md` | Cline | `.clinerules/lazyeng.md` |
+| `junie/AGENTS.md` | JetBrains Junie | `.junie/AGENTS.md` |
+| `amazonq/lazyeng.md` | Amazon Q Developer | `.amazonq/rules/lazyeng.md` |
 | `CONVENTIONS.md` | Aider | `CONVENTIONS.md` |
 | `skills/lazyeng/SKILL.md` | Agent Skills clients | `.claude/skills/lazyeng/SKILL.md` |
 
