@@ -55,6 +55,21 @@ Paste a prompt file into any model's system prompt — no tooling required:
 | `cline` | `.clinerules/lazyeng.md` | [Cline rules](https://docs.cline.bot/customization/cline-rules) |
 | `aider` | `CONVENTIONS.md` | Aider |
 
+### Root `<HARNESS>.md` files
+
+For environments where you prefer a single dedicated markdown file named after the harness at the root of the repository (alongside `CLAUDE.md`, `GEMINI.md`, and `AGENTS.md`):
+
+| Target | Installs to | Harness |
+|--------|-------------|---------|
+| `cursor-md` | `CURSOR.md` | Cursor root instruction file |
+| `windsurf-md` | `WINDSURF.md` | Windsurf root instruction file |
+| `copilot-md` | `COPILOT.md` | GitHub Copilot root instruction file |
+| `cline-md` | `CLINE.md` | Cline root instruction file |
+| `junie-md` | `JUNIE.md` | JetBrains Junie root instruction file |
+| `amazonq-md` | `AMAZONQ.md` | Amazon Q Developer root instruction file |
+| `muse-md` | `MUSE.md` | Muse Code root instruction file |
+| `opencode-md` | `OPENCODE.md` | OpenCode root instruction file |
+
 Every generated file is also committed under [`dist/`](dist), so you can copy one by hand or
 `curl` a single raw file if you'd rather not clone.
 

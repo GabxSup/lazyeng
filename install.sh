@@ -53,7 +53,7 @@ Options:
   -h, --help          show this help
   -V, --version       show version
 
-Targets: agents claude claude-skill gemini copilot copilot-instructions junie amazonq cursor windsurf cline aider
+Targets: agents claude claude-skill gemini copilot copilot-instructions copilot-md cursor cursor-md windsurf windsurf-md cline cline-md junie junie-md amazonq amazonq-md muse-md opencode-md aider
 
 Examples:
   ./install.sh --target claude
@@ -93,11 +93,19 @@ describe() {
         gemini)              echo "GEMINI.md — Gemini CLI / Antigravity (native name)" ;;
         copilot)             echo ".github/copilot-instructions.md — GitHub Copilot (global repo instructions)" ;;
         copilot-instructions)echo ".github/instructions/lazyeng.instructions.md — GitHub Copilot (modular, path-scoped)" ;;
+        copilot-md)          echo "COPILOT.md — GitHub Copilot root instruction file" ;;
         junie)               echo ".junie/AGENTS.md — JetBrains Junie" ;;
+        junie-md)            echo "JUNIE.md — JetBrains Junie root instruction file" ;;
         amazonq)             echo ".amazonq/rules/lazyeng.md — Amazon Q Developer" ;;
+        amazonq-md)          echo "AMAZONQ.md — Amazon Q Developer root instruction file" ;;
         cursor)              echo ".cursor/rules/lazyeng.mdc — Cursor project rule" ;;
+        cursor-md)           echo "CURSOR.md — Cursor root instruction file" ;;
         windsurf)            echo ".windsurf/rules/lazyeng.md — Windsurf rule" ;;
+        windsurf-md)         echo "WINDSURF.md — Windsurf root instruction file" ;;
         cline)               echo ".clinerules/lazyeng.md — Cline rule" ;;
+        cline-md)            echo "CLINE.md — Cline root instruction file" ;;
+        muse-md)             echo "MUSE.md — Muse Code root instruction file" ;;
+        opencode-md)         echo "OPENCODE.md — OpenCode root instruction file" ;;
         aider)               echo "CONVENTIONS.md — Aider" ;;
         *)            return 1 ;;
     esac
@@ -115,12 +123,20 @@ resolve() {
         gemini)              SRC=$DIST/GEMINI.md;                        MODE=shared; _p=GEMINI.md ;;
         copilot)             SRC=$DIST/copilot-instructions.md;          MODE=shared; _p=.github/copilot-instructions.md ;;
         copilot-instructions)SRC=$DIST/copilot/lazyeng.instructions.md; MODE=owned;  _p=.github/instructions/lazyeng.instructions.md ;;
+        copilot-md)          SRC=$DIST/COPILOT.md;                       MODE=shared; _p=COPILOT.md ;;
         aider)               SRC=$DIST/CONVENTIONS.md;                   MODE=shared; _p=CONVENTIONS.md ;;
         junie)               SRC=$DIST/junie/AGENTS.md;                  MODE=owned;  _p=.junie/AGENTS.md ;;
+        junie-md)            SRC=$DIST/JUNIE.md;                         MODE=shared; _p=JUNIE.md ;;
         amazonq)             SRC=$DIST/amazonq/lazyeng.md;               MODE=owned;  _p=.amazonq/rules/lazyeng.md ;;
+        amazonq-md)          SRC=$DIST/AMAZONQ.md;                       MODE=shared; _p=AMAZONQ.md ;;
         cursor)              SRC=$DIST/cursor/lazyeng.mdc;               MODE=owned;  _p=.cursor/rules/lazyeng.mdc ;;
+        cursor-md)           SRC=$DIST/CURSOR.md;                        MODE=shared; _p=CURSOR.md ;;
         windsurf)            SRC=$DIST/windsurf/lazyeng.md;              MODE=owned;  _p=.windsurf/rules/lazyeng.md ;;
+        windsurf-md)         SRC=$DIST/WINDSURF.md;                      MODE=shared; _p=WINDSURF.md ;;
         cline)               SRC=$DIST/cline/lazyeng.md;                 MODE=owned;  _p=.clinerules/lazyeng.md ;;
+        cline-md)            SRC=$DIST/CLINE.md;                         MODE=shared; _p=CLINE.md ;;
+        muse-md)             SRC=$DIST/MUSE.md;                          MODE=shared; _p=MUSE.md ;;
+        opencode-md)         SRC=$DIST/OPENCODE.md;                      MODE=shared; _p=OPENCODE.md ;;
         claude-skill)        SRC=$DIST/skills/lazyeng/SKILL.md;          MODE=owned;  _p=.claude/skills/lazyeng/SKILL.md ;;
         *) return 1 ;;
     esac
@@ -254,7 +270,7 @@ do_owned_uninstall() {
 if [ "$LIST" = 1 ]; then
     say "target          project scope / global scope"
     say "--------------  ---------------------------------------------------------------"
-    for t in agents claude claude-skill gemini copilot copilot-instructions junie amazonq cursor windsurf cline aider; do
+    for t in agents claude claude-skill gemini copilot copilot-instructions copilot-md junie junie-md amazonq amazonq-md cursor cursor-md windsurf windsurf-md cline cline-md muse-md opencode-md aider; do
         line=$(describe "$t")
         if resolve "$t" global 2>/dev/null; then
             g=$DEST

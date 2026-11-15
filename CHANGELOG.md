@@ -7,6 +7,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Root `<HARNESS>.md` targets** — added dedicated root markdown instruction files for every supported harness: `CURSOR.md` (`--target cursor-md`), `WINDSURF.md` (`--target windsurf-md`), `COPILOT.md` (`--target copilot-md`), `CLINE.md` (`--target cline-md`), `JUNIE.md` (`--target junie-md`), `AMAZONQ.md` (`--target amazonq-md`), `MUSE.md` (`--target muse-md`), and `OPENCODE.md` (`--target opencode-md`).
 - **`junie` target** — installs to `.junie/AGENTS.md` for JetBrains Junie (project scope) and `~/.junie/AGENTS.md` (global scope).
 - **`amazonq` target** — installs to `.amazonq/rules/lazyeng.md` for Amazon Q Developer. Plain markdown, no frontmatter (matches Q's format).
 - **`copilot-instructions` target** — installs to `.github/instructions/lazyeng.instructions.md` for GitHub Copilot's modular path-scoped instructions format (uses `applyTo: "**"` frontmatter).

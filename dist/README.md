@@ -18,6 +18,14 @@ Every file here is generated from `core/*.md` by `build.sh`. Never edit them by 
 | `cline/lazyeng.md` | Cline | `.clinerules/lazyeng.md` |
 | `junie/AGENTS.md` | JetBrains Junie | `.junie/AGENTS.md` |
 | `amazonq/lazyeng.md` | Amazon Q Developer | `.amazonq/rules/lazyeng.md` |
+| `CURSOR.md` | Cursor (root) | `CURSOR.md` |
+| `WINDSURF.md` | Windsurf (root) | `WINDSURF.md` |
+| `COPILOT.md` | GitHub Copilot (root) | `COPILOT.md` |
+| `CLINE.md` | Cline (root) | `CLINE.md` |
+| `JUNIE.md` | JetBrains Junie (root) | `JUNIE.md` |
+| `AMAZONQ.md` | Amazon Q Developer (root) | `AMAZONQ.md` |
+| `MUSE.md` | Muse Code (root) | `MUSE.md` |
+| `OPENCODE.md` | OpenCode (root) | `OPENCODE.md` |
 | `CONVENTIONS.md` | Aider | `CONVENTIONS.md` |
 | `skills/lazyeng/SKILL.md` | Agent Skills clients | `.claude/skills/lazyeng/SKILL.md` |
 

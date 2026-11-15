@@ -104,6 +104,39 @@ emit "$OUT/cline/lazyeng.md" "LazyEng" \
     "Cline rules file. Install: \`./install.sh --target cline\`" \
     base agent
 
+# ── Root .md files for each harness ───────────────────────────────────────────
+emit "$OUT/CURSOR.md" "LazyEng" \
+    "Cursor root instructions ([cursor.com](https://cursor.com)). Install: \`./install.sh --target cursor-md\`" \
+    base agent
+
+emit "$OUT/WINDSURF.md" "LazyEng" \
+    "Windsurf root instructions ([codeium.com/windsurf](https://codeium.com/windsurf)). Install: \`./install.sh --target windsurf-md\`" \
+    base agent
+
+emit "$OUT/COPILOT.md" "LazyEng" \
+    "GitHub Copilot root instructions ([github.com/features/copilot](https://github.com/features/copilot)). Install: \`./install.sh --target copilot-md\`" \
+    base agent
+
+emit "$OUT/CLINE.md" "LazyEng" \
+    "Cline root instructions ([cline.bot](https://cline.bot)). Install: \`./install.sh --target cline-md\`" \
+    base agent
+
+emit "$OUT/JUNIE.md" "LazyEng" \
+    "JetBrains Junie root guidelines ([jetbrains.com/junie](https://jetbrains.com/junie)). Install: \`./install.sh --target junie-md\`" \
+    base agent
+
+emit "$OUT/AMAZONQ.md" "LazyEng" \
+    "Amazon Q Developer root rules ([aws.amazon.com/q/developer](https://aws.amazon.com/q/developer)). Install: \`./install.sh --target amazonq-md\`" \
+    base agent
+
+emit "$OUT/MUSE.md" "LazyEng" \
+    "Muse Code root instructions. Install: \`./install.sh --target muse-md\`" \
+    base agent
+
+emit "$OUT/OPENCODE.md" "LazyEng" \
+    "OpenCode root instructions. Install: \`./install.sh --target opencode-md\`" \
+    base agent
+
 # Junie (JetBrains): reads .junie/AGENTS.md — identical content to AGENTS.md
 emit "$OUT/junie/AGENTS.md" "LazyEng" \
     "JetBrains Junie guideline file. Install: \`./install.sh --target junie\`" \
@@ -179,6 +212,14 @@ Every file here is generated from `core/*.md` by `build.sh`. Never edit them by 
 | `cline/lazyeng.md` | Cline | `.clinerules/lazyeng.md` |
 | `junie/AGENTS.md` | JetBrains Junie | `.junie/AGENTS.md` |
 | `amazonq/lazyeng.md` | Amazon Q Developer | `.amazonq/rules/lazyeng.md` |
+| `CURSOR.md` | Cursor (root) | `CURSOR.md` |
+| `WINDSURF.md` | Windsurf (root) | `WINDSURF.md` |
+| `COPILOT.md` | GitHub Copilot (root) | `COPILOT.md` |
+| `CLINE.md` | Cline (root) | `CLINE.md` |
+| `JUNIE.md` | JetBrains Junie (root) | `JUNIE.md` |
+| `AMAZONQ.md` | Amazon Q Developer (root) | `AMAZONQ.md` |
+| `MUSE.md` | Muse Code (root) | `MUSE.md` |
+| `OPENCODE.md` | OpenCode (root) | `OPENCODE.md` |
 | `CONVENTIONS.md` | Aider | `CONVENTIONS.md` |
 | `skills/lazyeng/SKILL.md` | Agent Skills clients | `.claude/skills/lazyeng/SKILL.md` |
 

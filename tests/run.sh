@@ -55,7 +55,8 @@ for f in system-prompt.md system-prompt-compact.md AGENTS.md CLAUDE.md GEMINI.md
          copilot-instructions.md copilot/lazyeng.instructions.md \
          junie/AGENTS.md amazonq/lazyeng.md \
          CONVENTIONS.md cursor/lazyeng.mdc windsurf/lazyeng.md \
-         cline/lazyeng.md skills/lazyeng/SKILL.md README.md; do
+         cline/lazyeng.md skills/lazyeng/SKILL.md README.md \
+         CURSOR.md WINDSURF.md COPILOT.md CLINE.md JUNIE.md AMAZONQ.md MUSE.md OPENCODE.md; do
     [ -s "dist/$f" ] || missing="$missing $f"
 done
 assert_eq "every adapter is generated and non-empty" "" "$missing"
@@ -293,6 +294,13 @@ assert_exit "amazonq uninstall removes file" 0 ./install.sh --target amazonq --d
 assert_exit "copilot-instructions installs" 0 ./install.sh --target copilot-instructions --dir "$P"
 [ -f "$P/.github/instructions/lazyeng.instructions.md" ] && ok "copilot-instructions file created" || bad "copilot-instructions file created"
 
+# root <HARNESS>.md installs (shared mode with markers)
+assert_exit "cursor-md installs" 0 ./install.sh --target cursor-md --dir "$P"
+[ -f "$P/CURSOR.md" ] && ok "CURSOR.md created" || bad "CURSOR.md created"
+assert_contains "CURSOR.md has markers" "lazyeng:begin" "$(cat "$P/CURSOR.md")"
+assert_exit "cursor-md uninstall removes clean file" 0 ./install.sh --target cursor-md --dir "$P" --uninstall
+[ -f "$P/CURSOR.md" ] && bad "CURSOR.md removed on uninstall" || ok "CURSOR.md removed on uninstall"
+
 # clean file that LazyEng created is deleted, not left empty
 Q="$TMP/created"
 mkdir -p "$Q"
@@ -312,7 +320,8 @@ for f in AGENTS.md CLAUDE.md GEMINI.md .github/copilot-instructions.md CONVENTIO
          .cursor/rules/lazyeng.mdc .windsurf/rules/lazyeng.md .clinerules/lazyeng.md \
          .claude/skills/lazyeng/SKILL.md \
          .junie/AGENTS.md .amazonq/rules/lazyeng.md \
-         .github/instructions/lazyeng.instructions.md; do
+         .github/instructions/lazyeng.instructions.md \
+         CURSOR.md WINDSURF.md COPILOT.md CLINE.md JUNIE.md AMAZONQ.md MUSE.md OPENCODE.md; do
     grep -qF "$f" README.md || missing_docs="$missing_docs $f"
 done
 assert_eq "README documents every install destination" "" "$missing_docs"
