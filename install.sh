@@ -34,6 +34,7 @@ DRY=0
 UNINSTALL=0
 FORCE=0
 LIST=0
+STATUS=0
 
 usage() {
     cat <<'END'
@@ -48,6 +49,7 @@ Options:
   -d, --dir PATH      project root to install into (default: .)
       --uninstall     remove what this script installed
       --dry-run       show what would change, write nothing
+      --status        show installation status of targets
   -f, --force         overwrite a file LazyEng does not manage
   -l, --list          list targets and the path each installs to
   -h, --help          show this help
@@ -74,6 +76,7 @@ while [ $# -gt 0 ]; do
         -d|--dir)       [ $# -ge 2 ] || usage_error "$1 needs a value"; DIR=$2; shift 2 ;;
         --uninstall)    UNINSTALL=1; shift ;;
         --dry-run)      DRY=1; shift ;;
+        --status)       STATUS=1; shift ;;
         -f|--force)     FORCE=1; shift ;;
         -l|--list)      LIST=1; shift ;;
         -h|--help)      usage; exit 0 ;;
@@ -291,6 +294,46 @@ if [ "$SCOPE" = global ]; then
 else
     mkdir -p "$DIR" 2>/dev/null || true
     BASE=$(cd "$DIR" 2>/dev/null && pwd) || die "no such directory: $DIR"
+fi
+
+if [ "$STATUS" = 1 ]; then
+    say "$(printf '%-22s %-42s %s' 'target' 'path' 'status')"
+    say "$(printf '%-22s %-42s %s' '----------------------' '------------------------------------------' '----------------------')"
+    for t in agents claude claude-skill gemini copilot copilot-instructions copilot-md junie junie-md amazonq amazonq-md cursor cursor-md windsurf windsurf-md cline cline-md muse-md opencode-md aider; do
+        if ! resolve "$t" "$SCOPE" 2>/dev/null; then
+            continue
+        fi
+        rel_dest=${DEST/#$BASE\//}
+        if [ "$SCOPE" = global ]; then rel_dest=${DEST/#$HOME/\~}; fi
+        st="not installed"
+        if [ -f "$DEST" ]; then
+            if [ "$MODE" = shared ]; then
+                if grep -qF "$BEGIN_MARK" "$DEST"; then
+                    curr_block=$(awk -v b="$BEGIN_MARK" -v e="$END_MARK" '$0==b{p=1} p{print} $0==e{p=0}' "$DEST")
+                    want_block=$(make_block "$SRC")
+                    if [ "$curr_block" = "$want_block" ]; then
+                        st="installed (up to date)"
+                    else
+                        st="installed (needs update)"
+                    fi
+                else
+                    st="foreign file (no LazyEng)"
+                fi
+            else
+                if grep -qF "$OWNED_MARK" "$DEST"; then
+                    if cmp -s "$SRC" "$DEST"; then
+                        st="installed (up to date)"
+                    else
+                        st="installed (needs update)"
+                    fi
+                else
+                    st="foreign file (unmanaged)"
+                fi
+            fi
+        fi
+        say "$(printf '%-22s %-42s %s' "$t" "$rel_dest" "$st")"
+    done
+    exit 0
 fi
 
 if [ "$TARGET" = all ]; then

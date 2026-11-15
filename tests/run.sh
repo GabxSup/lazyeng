@@ -301,6 +301,12 @@ assert_contains "CURSOR.md has markers" "lazyeng:begin" "$(cat "$P/CURSOR.md")"
 assert_exit "cursor-md uninstall removes clean file" 0 ./install.sh --target cursor-md --dir "$P" --uninstall
 [ -f "$P/CURSOR.md" ] && bad "CURSOR.md removed on uninstall" || ok "CURSOR.md removed on uninstall"
 
+# --status tests
+assert_exit "--status exits 0" 0 ./install.sh --status --dir "$P"
+status_out=$(./install.sh --status --dir "$P")
+assert_contains "--status lists targets" "agents" "$status_out"
+assert_contains "--status reports not installed" "not installed" "$status_out"
+
 # clean file that LazyEng created is deleted, not left empty
 Q="$TMP/created"
 mkdir -p "$Q"

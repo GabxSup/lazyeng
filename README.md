@@ -20,6 +20,7 @@ git clone https://github.com/GabxSup/lazyeng && cd lazyeng
 ./install.sh --target claude          # CLAUDE.md
 ./install.sh --target cursor --dry-run
 ./install.sh --target claude --scope global
+./install.sh --status                 # audit which agent files are installed
 ./install.sh --list                   # every target and its path
 ```
 
