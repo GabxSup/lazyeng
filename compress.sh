@@ -33,15 +33,17 @@ Arguments:
   -              read the prompt from stdin (default when no arguments)
 
 Options:
-  -h, --help     show this help
-  -V, --version  show version
-  --stats        print before/after character counts to stderr
-  --tokens       print before/after token estimates (chars/4) to stderr
-  --file FILE    compress FILE and overwrite it in place (reads stdin if -)
+  -h, --help      show this help
+  -V, --version   show version
+  -c, --clipboard read from and write back to system clipboard
+  --stats         print before/after character counts to stderr
+  --tokens        print before/after token estimates (chars/4) to stderr
+  --file FILE     compress FILE and overwrite it in place (reads stdin if -)
 
 Examples:
   ./compress.sh "Could you please write a function that takes a list of users and returns the active ones"
   echo "In order to fix this, I would like you to just remove the extra spaces" | ./compress.sh
+  ./compress.sh -c
   ./compress.sh --file my-prompt.txt
 
 Exit codes: 0 ok · 2 bad usage
@@ -49,6 +51,7 @@ END
 
 my $want_stats  = 0;
 my $want_tokens = 0;
+my $want_clip   = 0;
 my $file_target = '';
 my $literal     = 0;
 my @args;
@@ -59,6 +62,7 @@ for my $a (@ARGV) {
     elsif ($a eq '-V' || $a eq '--version') { print "compress.sh $VERSION\n"; exit 0 }
     elsif ($a eq '--stats')                 { $want_stats = 1 }
     elsif ($a eq '--tokens')                { $want_tokens = 1 }
+    elsif ($a eq '-c' || $a eq '--clip' || $a eq '--clipboard') { $want_clip = 1 }
     elsif ($a eq '--file') {
         # next token is the filename; grab it on the next iteration
         $file_target = '__next__';
@@ -68,9 +72,15 @@ for my $a (@ARGV) {
     else                                    { push @args, $a }
 }
 
-# --file: read from file (or stdin if '-'), write back
+# Source of input
 my $input;
-if ($file_target && $file_target ne '__next__') {
+if ($want_clip) {
+    $input = read_clipboard();
+    if (!defined $input) {
+        print STDERR "compress.sh: failed to read from clipboard (requires pbpaste, wl-paste, or xclip)\n";
+        exit 1;
+    }
+} elsif ($file_target && $file_target ne '__next__') {
     if ($file_target eq '-') {
         local $/; $input = <STDIN>;
     } else {
@@ -91,12 +101,20 @@ chomp $input;
 
 my $out = compress_document($input);
 
-# Write back for --file mode
+# Write back for --file mode or --clipboard mode
 if ($file_target && $file_target ne '__next__' && $file_target ne '-') {
     open my $fh, '>', $file_target or do {
         print STDERR "compress.sh: cannot write '$file_target': $!\n"; exit 1;
     };
     print $fh $out, "\n" if length $out;
+} elsif ($want_clip) {
+    if (write_clipboard($out)) {
+        print $out, "\n" if length $out;
+        print STDERR "copied to clipboard\n";
+    } else {
+        print $out, "\n" if length $out;
+        print STDERR "warning: compressed prompt printed, but could not copy to clipboard\n";
+    }
 } else {
     print $out, "\n" if length $out;
 }
@@ -199,14 +217,18 @@ sub compress_line {
     $body =~ s/(`+[^`]*`+)/push(@code, $1), "\x01" . $#code . "\x01"/ge;
 
     # 1. Leading politeness, repeatedly ("Please can you just...").
-    for (1 .. 3) {
+    for (1 .. 4) {
         last unless $body =~ s/\A(?:hi|hello|hey)(?:\s+there)?[,!\s]+//i
                           or $body =~ s/\A(?:please|pls|kindly)[,!\s]+//i
                           or $body =~ s/\A(?:there|thanks|thank\s+you)[,!\s]+//i
                           or $body =~ s/\A(?:could|can|would|will)\s+you\s+(?:please\s+)?//i
                           or $body =~ s/\A(?:i\s+would\s+like|i\s+need|i\s+want)\s+you\s+to\s+//i
                           or $body =~ s/\Ahelp\s+me\s+(?:to\s+)?//i
-                          or $body =~ s/\Ago\s+ahead\s+and\s+//i;
+                          or $body =~ s/\Ago\s+ahead\s+and\s+//i
+                          or $body =~ s/\A(?:i'm|i\s+am)\s+working\s+on\s+(?:a\s+project\s+where\s+)?//i
+                          or $body =~ s/\A(?:i\s+was\s+wondering\s+if\s+you\s+could|wondering\s+if\s+you\s+can)\s+//i
+                          or $body =~ s/\A(?:can|could)\s+you\s+(?:please\s+)?(?:explain|show|tell)\s+(?:me\s+)?how\s+to\s+/how to /i
+                          or $body =~ s/\A(?:i\s+need\s+to|i\s+have\s+to)\s+//i;
     }
 
     # 2. Politeness and filler anywhere in the sentence.
@@ -219,6 +241,7 @@ sub compress_line {
     $body =~ s/\b(?:as\s+(?:you\s+know|mentioned|noted|discussed|stated|outlined))[,\s]*//gi;
     $body =~ s/\b(?:in\s+this\s+(?:case|context|scenario|situation))[,\s]*//gi;
     $body =~ s/\b(?:at\s+(?:the\s+end\s+of\s+the\s+day|this\s+point\s+in\s+time))[,\s]*//gi;
+    $body =~ s/\b(?:as\s+a\s+matter\s+of\s+fact|to\s+be\s+honest|honestly)\b[,\s]*/ /gi;
 
     # 3. "write me a function that takes X and returns Y" -> "fn: X → Y"
     $body =~ s/\b(?:write|create|build|make|give\s+me)\s+(?:me\s+)?(?:a|an|the)\s+
@@ -262,4 +285,48 @@ sub compress_line {
     $body =~ s/\x01(\d+)\x01/$code[$1]/g;
 
     return $body eq '' ? '' : $indent . $marker . $body;
+}
+
+# ── clipboard helpers ────────────────────────────────────────────────────────
+sub read_clipboard {
+    my $cmd;
+    if ($^O eq 'darwin') {
+        $cmd = 'pbpaste';
+    } elsif ($ENV{WAYLAND_DISPLAY} && has_bin('wl-paste')) {
+        $cmd = 'wl-paste';
+    } elsif (has_bin('xclip')) {
+        $cmd = 'xclip -o -selection clipboard';
+    } elsif (has_bin('xsel')) {
+        $cmd = 'xsel --clipboard --output';
+    }
+    return undef unless $cmd;
+    my $content = `$cmd 2>/dev/null`;
+    return $content;
+}
+
+sub write_clipboard {
+    my ($text) = @_;
+    my $cmd;
+    if ($^O eq 'darwin') {
+        $cmd = 'pbcopy';
+    } elsif ($ENV{WAYLAND_DISPLAY} && has_bin('wl-copy')) {
+        $cmd = 'wl-copy';
+    } elsif (has_bin('xclip')) {
+        $cmd = 'xclip -selection clipboard';
+    } elsif (has_bin('xsel')) {
+        $cmd = 'xsel --clipboard --input';
+    }
+    return 0 unless $cmd;
+    open my $pipe, '|-', $cmd or return 0;
+    print $pipe $text;
+    close $pipe;
+    return 1;
+}
+
+sub has_bin {
+    my ($bin) = @_;
+    for my $dir (split /:/, $ENV{PATH} || '') {
+        return 1 if -x "$dir/$bin";
+    }
+    return 0;
 }

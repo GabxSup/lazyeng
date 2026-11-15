@@ -231,6 +231,15 @@ assert_eq "filler: go ahead and (leading)" \
 assert_eq "filler: as you know" \
     "the sky is blue." \
     "$(./compress.sh "as you know, the sky is blue.")"
+assert_eq "filler: wondering if you could" \
+    "fn: list → unique items" \
+    "$(./compress.sh "I was wondering if you could write a function that takes a list and returns unique items")"
+assert_eq "filler: working on a project where" \
+    "sort this array by date" \
+    "$(./compress.sh "I'm working on a project where I need to sort this array by date")"
+
+# clipboard flag is accepted
+assert_contains "help documents clipboard" "--clipboard" "$(./compress.sh --help)"
 
 # ── install.sh behaviour ─────────────────────────────────────────────────────
 group "install.sh"

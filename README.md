@@ -167,6 +167,9 @@ API endpoint: authentication
 $ ./compress.sh --stats "Hi there, can you please just quickly fix the bug in server.js?"
 quickly fix the bug in server.js?
 chars: 66 -> 31 (53% smaller)
+
+$ ./compress.sh -c                                              # compress clipboard in-place
+copied to clipboard
 ```
 
 It is lossy by design — read the output before sending it. Requires `perl` (preinstalled on

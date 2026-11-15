@@ -7,6 +7,8 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **`compress.sh -c / --clipboard`** — compresses text directly from system clipboard (macOS `pbpaste`/`pbcopy`, Linux Wayland `wl-paste`/`wl-copy`, X11 `xclip`/`xsel`) and writes the compressed prompt back to the clipboard ready to paste into any model.
+- **Conversational throat-clearing stripping** in `compress.sh`: removes conversational intros like `"I was wondering if you could..."`, `"I'm working on a project where..."`, and `"Can you explain how to..."`.
 - **`install.sh --status`** — inspects the project (or global scope) and audits every target, reporting whether files are installed, up-to-date, modified/needing update, or foreign.
 - **Root `<HARNESS>.md` targets** — added dedicated root markdown instruction files for every supported harness: `CURSOR.md` (`--target cursor-md`), `WINDSURF.md` (`--target windsurf-md`), `COPILOT.md` (`--target copilot-md`), `CLINE.md` (`--target cline-md`), `JUNIE.md` (`--target junie-md`), `AMAZONQ.md` (`--target amazonq-md`), `MUSE.md` (`--target muse-md`), and `OPENCODE.md` (`--target opencode-md`).
 - **`junie` target** — installs to `.junie/AGENTS.md` for JetBrains Junie (project scope) and `~/.junie/AGENTS.md` (global scope).
